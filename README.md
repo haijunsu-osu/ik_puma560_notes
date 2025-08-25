@@ -117,6 +117,39 @@ Step 7. **Normalize and Verify Solutions**: All solutions are normalized to the 
 
 	Use: $\text{normalize\_all}(q)$
 
+## Solve Trig Equation
+The helper function `solve_trig_equation(A, B, C)` solves the equation:
+
+$$
+A \cos(x) + B \sin(x) = C
+$$
+
+**Details:**
+- Returns two solutions $[x_+, x_-]$ if real solutions exist, or an empty list if $|C| > \sqrt{A^2+B^2}$.
+- If $\sqrt{A^2+B^2}$ is very small (degenerate case), returns an empty list.
+- If $|C| > \sqrt{A^2+B^2}$, there is no real solution.
+- Otherwise, computes:
+  - $r = \sqrt{A^2 + B^2}$
+  - $\text{base\_angle} = \arctan2(B, A)$
+  - $\delta = \arccos(C / r)$
+  - Solutions: $x_+ = \text{base\_angle} + \delta$, $x_- = \text{base\_angle} - \delta$
+
+**Python Implementation:**
+```python
+# Solve the equation: A*cos(x) + B*sin(x) = C.
+# Returns two solutions [x_plus, x_minus] if real solutions exist,
+# or an empty list if |C| > sqrt(A^2+B^2).
+def solve_trig_equation(A, B, C):
+    r = sqrt(A*A + B*B)
+    if r < 1e-15:
+        return []  # degenerate case
+    if abs(C) > r:
+        return []  # no real solution
+    base_angle = atan2(B, A)
+    delta = acos(C / r)
+    return [base_angle + delta, base_angle - delta]
+```
+
 ## Usage
 Run the Python script to test the kinematics algorithms with example joint angles. The script prints the results of forward and inverse kinematics, and verifies the solutions.
 
