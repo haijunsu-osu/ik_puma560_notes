@@ -91,7 +91,7 @@ $$
 
 Use the helper: $\text{solve\_trig\_equation}(2a_2a_3, -2a_2d_4, C_3)$
 
-Step 5. **Solve for Second Joint Angle ($\theta_2$)**: For each ($\theta_1$, $\theta_3$) pair, solve for $\theta_2$ using the robot geometry:
+Step 5. **Solve for Second Joint Angle ($\theta_2$)**: For each ($\theta_1$, $\theta_3$) pair, solve the following linear equations for $c_2$ and $s_2$:
 
 $$
 \begin{align*}
@@ -99,8 +99,8 @@ $$
     -s_2(c_1p_x + s_1p_y) - c_2p_z &= a_3\sin\theta_3 + d_4\cos\theta_3
 \end{align*}
 $$
-$$
-\theta_2 = \text{atan2}(s_2, c_2)
+And then solve for $\theta_2$ by 
+$$\theta_2 = \text{atan2}(s_2, c_2)$$
 
 Step 6. **Compute Wrist Rotation**: Calculate the wrist rotation matrix and solve for the last three joint angles ($\theta_4$, $\theta_5$, $\theta_6$) using spherical wrist formulas:
 
