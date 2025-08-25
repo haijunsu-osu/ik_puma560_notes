@@ -136,7 +136,7 @@ $$
 - If $\|C\| > \sqrt{A^2+B^2}$, there is no real solution.
 - Otherwise, computes:
   - $r = \sqrt{A^2 + B^2}$
-  - Solutions: $x_+ = \arctan2(B, A)$ + \arccos(C / r)$, $x_- = \arctan2(B, A) - \arccos(C / r)$
+  - Solutions: $x_+ = \arctan2(B, A) + \arccos(C / r)$, $x_- = \arctan2(B, A) - \arccos(C / r)$
 
 **Python Implementation:**
 ```python
