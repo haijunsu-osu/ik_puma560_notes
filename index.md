@@ -20,6 +20,9 @@ This repository contains a Python implementation of the forward and inverse kine
 - **Inverse Kinematics**: Computes all possible sets of joint angles that achieve a desired end-effector pose.
 
 The algorithms follow the Denavit-Hartenberg convention and include base and tool transformations for accurate modeling.
+
+## Forward Kinematics Steps
+
 Step 1. **Define Base and Tool Transforms**: The base (`G`) and tool (`H`) transforms are set as translations along the z-axis.
 
 Step 2. **Set DH Parameters**: The Denavit-Hartenberg parameters for the PUMA 560 are defined as follows:
