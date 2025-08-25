@@ -10,8 +10,8 @@ This repository contains a Python implementation of the forward and inverse kine
 The algorithms follow the Denavit-Hartenberg convention and include base and tool transformations for accurate modeling.
 
 ## Forward Kinematics Steps
-1. **Define Base and Tool Transforms**: The base (`G`) and tool (`H`) transforms are set as translations along the z-axis.
-2. **Set DH Parameters**: The Denavit-Hartenberg parameters for the PUMA 560 are defined as follows:
+Step 1. **Define Base and Tool Transforms**: The base (`G`) and tool (`H`) transforms are set as translations along the z-axis.
+Step 2. **Set DH Parameters**: The Denavit-Hartenberg parameters for the PUMA 560 are defined as follows:
 
 | Joint | $a$ (m)   | $\alpha$ (deg) | $d$ (m)    | $\theta$ (variable) |
 |-------|---------|-------------|----------|------------------|
@@ -21,7 +21,7 @@ The algorithms follow the Denavit-Hartenberg convention and include base and too
 | 4     | $0.0$     | $90$          | $0.43307$  | $\theta_4$               |
 | 5     | $0.0$     | $-90$         | $0.0$      | $\theta_5$               |
 | 6     | $0.0$     | $0$           | $0.0$      | $\theta_6$               |
-3. **Compute DH Transform for Each Joint**: For each joint, a DH transformation matrix is constructed using the following formula:
+Step 3. **Compute DH Transform for Each Joint**: For each joint, a DH transformation matrix is constructed using the following formula:
 
    $$
    T = \begin{bmatrix}
@@ -37,14 +37,14 @@ where:
 - $\alpha$: link twist (in radians)
 - $a$: link length
 - $d$: link offset
-4. **Multiply Transformations**: The overall arm transformation is computed by multiplying the DH matrices for all joints:
+Step 4. **Multiply Transformations**: The overall arm transformation is computed by multiplying the DH matrices for all joints:
 
 	$$
 	T_{arm} = T_1 \times T_2 \times T_3 \times T_4 \times T_5 \times T_6
 	$$
 
 where $T_1, T_2, ..., T_6$ are the DH transformation matrices for each joint, constructed as described above.
-5. **Apply Base and Tool Transforms**: The final pose is obtained by applying the base and tool transforms to the arm transformation:
+Step 5. **Apply Base and Tool Transforms**: The final pose is obtained by applying the base and tool transforms to the arm transformation:
 
 	$$
 	T = G \times T_{arm} \times H
@@ -56,19 +56,19 @@ where:
 - $H$: tool transform matrix
 
 ## Inverse Kinematics Steps
-1. **Remove Base/Tool Offsets**: Compute the effective transformation by removing the base and tool transforms from the target pose:
+Step 1. **Remove Base/Tool Offsets**: Compute the effective transformation by removing the base and tool transforms from the target pose:
 
 	$$
 	T' = G^{-1} \cdot T \cdot H^{-1}
 	$$
 
-2. **Extract Wrist Center**: The wrist center position is extracted from the transformation matrix:
+Step 2. **Extract Wrist Center**: The wrist center position is extracted from the transformation matrix:
 
 	$$
 	\mathbf{p}_{wc} = T'[0:3, 3]
 	$$
 
-3. **Solve for First Joint Angle ($\theta_1$)**: Use a trigonometric equation to solve for possible values of $\theta_1$:
+Step 3. **Solve for First Joint Angle ($\theta_1$)**: Use a trigonometric equation to solve for possible values of $\theta_1$:
 
 	$$
 	-\sin\theta_1 \cdot p_x + \cos\theta_1 \cdot p_y = d_3
@@ -77,7 +77,7 @@ where:
 
 	Use the helper: $\text{solve\_trig\_equation}(p_y, -p_x, d_3)$
 
-4. **Solve for Third Joint Angle ($\theta_3$)**: Use a distance equation and trigonometric solver to find possible $\theta_3$ values:
+Step *Solve for Third Joint Angle ($\theta_3$)**: Use a distance equation and trigonometric solver to find possible $\theta_3$ values:
 
 	$$
 	2a_2(a_3\cos\theta_3 - d_4\sin\theta_3) = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)
@@ -86,7 +86,7 @@ where:
 
 	Use the helper: $\text{solve\_trig\_equation}(2a_2a_3, -2a_2d_4, C_3)$
 
-5. **Solve for Second Joint Angle ($\theta_2$)**: For each ($\theta_1$, $\theta_3$) pair, solve for $\theta_2$ using the robot geometry:
+Step 5. **Solve for Second Joint Angle ($\theta_2$)**: For each ($\theta_1$, $\theta_3$) pair, solve for $\theta_2$ using the robot geometry:
 
 	$$
 	c_2(c_1p_x + s_1p_y) - s_2p_z = a_2 + a_3\cos\theta_3 - d_4\sin\theta_3
@@ -98,7 +98,7 @@ where:
 		heta_2 = \text{atan2}(s_2, c_2)
 	$$
 
-6. **Compute Wrist Rotation**: Calculate the wrist rotation matrix and solve for the last three joint angles ($\theta_4$, $\theta_5$, $\theta_6$) using spherical wrist formulas:
+Step 6. **Compute Wrist Rotation**: Calculate the wrist rotation matrix and solve for the last three joint angles ($\theta_4$, $\theta_5$, $\theta_6$) using spherical wrist formulas:
 
 	$$
 	R_{03} = \text{rotation from first three joints}
@@ -115,7 +115,7 @@ where:
 	- $\theta_4$: $\text{atan2}(R_{36}[1,2]/(-\sin\theta_5), R_{36}[0,2]/(-\sin\theta_5))$
 	- $\theta_6$: $\text{atan2}(R_{36}[2,1]/(-\sin\theta_5), R_{36}[2,0]/\sin\theta_5)$
 
-7. **Normalize and Verify Solutions**: All solutions are normalized to the range $[-\pi, \pi]$ and verified against the original pose.
+Step 7. **Normalize and Verify Solutions**: All solutions are normalized to the range $[-\pi, \pi]$ and verified against the original pose.
 
 	Use: $\text{normalize\_all}(q)$
 
