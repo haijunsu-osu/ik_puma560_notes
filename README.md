@@ -80,7 +80,7 @@ $$
 
 which can be rewritten as: $p_y \cdot \cos\theta_1 + (-p_x) \cdot \sin\theta_1 = d_3$.
 
-Use the helper: $\text{solve\_trig\_equation}(p_y, -p_x, d_3$
+Use the helper: `solve_trig_equation`$(p_y, -p_x, d_3)$
 
 Step 4. **Solve for Third Joint Angle ($\theta_3$)**: Use a distance equation and trigonometric solver to find possible $\theta_3$ values:
 
@@ -92,7 +92,7 @@ rewritten as: $A\cos\theta_3 + B\sin\theta_3 = C$, with
 
 $$A = 2a_2a_3, B = -2a_2d_4, C = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)$$
 
-Use the helper: $\text{solve\_trig\_equation}(2a_2a_3, -2a_2d_4, C_3)$
+Use the helper: `solve_trig_equation(A, B, C)`$(2a_2a_3, -2a_2d_4, C_3)$
 
 Step 5. **Solve for Second Joint Angle ($\theta_2$)**: For each ($\theta_1$, $\theta_3$) pair, solve the following linear equations for $c_2$ and $s_2$:
 
@@ -124,9 +124,7 @@ For the spherical wrist:
 - $\theta_4$: $\text{atan2}(R_{36}[1,2]/(-\sin\theta_5), R_{36}[0,2]/(-\sin\theta_5))$
 - $\theta_6$: $\text{atan2}(R_{36}[2,1]/(-\sin\theta_5), R_{36}[2,0]/\sin\theta_5)$
 
-Step 7. **Normalize and Verify Solutions**: All solutions are normalized to the range $[-\pi, \pi]$ and verified against the original pose.
-
-Use: $\text{normalize\_all}(q)$
+Step 7. **Normalize and Verify Solutions**: All solutions are normalized to the range $[-\pi, \pi]$ and verified against the original pose. Use: `normalize_all(q)`
 
 ## Solve Trig Equation
 The helper function `solve_trig_equation(A, B, C)` solves the equation:
