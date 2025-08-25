@@ -25,8 +25,21 @@ Step 2. **Set DH Parameters**: The Denavit-Hartenberg parameters for the PUMA 56
 | 4     | $0.0$     | $90$          | $0.43307$  | $\theta_4$               |
 | 5     | $0.0$     | $-90$         | $0.0$      | $\theta_5$               |
 
+Each joint transfromation is formed by a screw displacement along Z-axis, followed by a screw displacement along X-axis, that is,
 $$
-T = \begin{bmatrix}
+T = [Z(d,\theta)][X(a, \alpha)]=\begin{bmatrix}
+	\cos\theta & -\sin\theta & 0 & 0 \\
+	\sin\theta & \cos\theta & 0 & 0 \\
+	0 & 0 & 0 & d \\
+	0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+	1 & 0 & 0 & a \\
+	0 & \cos\alpha & -\sin\alpha & 0 \\
+	0 & \sin\alpha & \cos\alpha & 0 \\
+	0 & 0 & 0 & 1
+\end{bmatrix}=
+\begin{bmatrix}
 	\cos\theta & -\sin\theta\cos\alpha & \sin\theta\sin\alpha & a\cos\theta \\
 	\sin\theta & \cos\theta\cos\alpha & -\cos\theta\sin\alpha & a\sin\theta \\
 	0 & \sin\alpha & \cos\alpha & d \\
@@ -92,7 +105,7 @@ rewritten as: $A\cos\theta_3 + B\sin\theta_3 = C$, with
 
 $$A = 2a_2a_3, B = -2a_2d_4, C = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)$$
 
-Use the helper: `solve_trig_equation(A, B, C)`$(2a_2a_3, -2a_2d_4, C_3)$
+Use the helper: `solve_trig_equation`$(2a_2a_3, -2a_2d_4, C_3)$
 
 Step 5. **Solve for Second Joint Angle ($\theta_2$)**: For each ($\theta_1$, $\theta_3$) pair, solve the following linear equations for $c_2$ and $s_2$:
 
