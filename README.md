@@ -125,14 +125,12 @@ A \cos(x) + B \sin(x) = C
 $$
 
 **Details:**
-- Returns two solutions $[x_+, x_-]$ if real solutions exist, or an empty list if $|C| > \sqrt{A^2+B^2}$.
+- Returns two solutions $[x_+, x_-]$ if real solutions exist, or an empty list if $\|C\| > \sqrt{A^2+B^2}$.
 - If $\sqrt{A^2+B^2}$ is very small (degenerate case), returns an empty list.
-- If $|C| > \sqrt{A^2+B^2}$, there is no real solution.
+- If $\|C\| > \sqrt{A^2+B^2}$, there is no real solution.
 - Otherwise, computes:
   - $r = \sqrt{A^2 + B^2}$
-  - $\text{base\_angle} = \arctan2(B, A)$
-  - $\delta = \arccos(C / r)$
-  - Solutions: $x_+ = \text{base\_angle} + \delta$, $x_- = \text{base\_angle} - \delta$
+  - Solutions: $x_+ = \arctan2(B, A)$ + \arccos(C / r)$, $x_- = \arctan2(B, A) - \arccos(C / r)$
 
 **Python Implementation:**
 ```python
