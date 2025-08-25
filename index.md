@@ -13,6 +13,7 @@ window.MathJax = {
 # PUMA 560 Kinematics
 
 This repository contains a Python implementation of the forward and inverse kinematics algorithms for the PUMA 560 robot arm. The code is based on the procedures and equations described in the document [Inverse Kinematics of PUMA 560 Robot.pdf](./Inverse%20Kinematics%20of%20PUMA%20560%20Robot.pdf).
+You can view the Python source code here: [PUMA560Kinematics_FollowNotes_Answer.py](./PUMA560Kinematics_FollowNotes_Answer.py).
 
 ## Overview
 
@@ -87,7 +88,8 @@ Step 3. **Solve for First Joint Angle ($\theta_1$)**: Use a trigonometric equati
 $$
 -\sin\theta_1 \cdot p_x + \cos\theta_1 \cdot p_y = d_3
 $$
-	(rewritten as: $p_y \cdot \cos\theta_1 + (-p_x) \cdot \sin\theta_1 = d_3$)
+
+rewritten as: $p_y \cdot \cos\theta_1 + (-p_x) \cdot \sin\theta_1 = d_3$
 
 Use the helper: $\text{solve\_trig\_equation}(p_y, -p_x, d_3)$
 
@@ -101,7 +103,7 @@ $$
 
 $A = 2a_2a_3$, $B = -2a_2d_4$, $C = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)$)
 
-Use the helper: $\text{solve\_trig\_equation}(2a_2a_3, -2a_2d_4, C_3)$
+Use the helper: $\text{solve\_trig\_equation}(A, B, C)$
 
 Step 5. **Solve for Second Joint Angle ($\theta_2$)**: For each ($\theta_1$, $\theta_3$) pair, solve the following linear equations for $c_2$ and $s_2$:
 
@@ -112,7 +114,7 @@ $$
 \end{align*}
 $$
 
-And then solve for $\theta_2$ by 
+And then solve for  
 $$\theta_2 = \text{atan2}(s_2, c_2)$$
 
 Step 6. **Compute Wrist Rotation**: Calculate the wrist rotation matrix and solve for the last three joint angles ($\theta_4$, $\theta_5$, $\theta_6$) using spherical wrist formulas:
@@ -129,12 +131,12 @@ $$
 
 For the spherical wrist:
 - $\theta_5$: $\arccos(R_{36}[2,2])$ and $-\arccos(R_{36}[2,2])$
-- $\theta_4$: $\text{atan2}(R_{36}[1,2]/(-\sin\theta_5), R_{36}[0,2]/(-\sin\theta_5))$
+- $\theta_4$: $\text{atan2}(R_{36}[1,2]/(-\sin\theta_5), R_{36}[0,2]/(-\sin\theta_5))$ for each solution of $\theta_5$
 - $\theta_6$: $\text{atan2}(R_{36}[2,1]/(-\sin\theta_5), R_{36}[2,0]/\sin\theta_5)$
 
 Step 7. **Normalize and Verify Solutions**: All solutions are normalized to the range $[-\pi, \pi]$ and verified against the original pose.
 
-Use: $\text{normalize\_all}(q)$
+Use the helper function: $\text{normalize\_all}(q)$
 
 ## Solve Trig Equation
 The helper function `solve_trig_equation(A, B, C)` solves the equation:
