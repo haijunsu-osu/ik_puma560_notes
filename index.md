@@ -1,7 +1,5 @@
-layout: default
 
 ---
-title: PUMA 560 Kinematics Notes
 <script>
 window.MathJax = {
     tex: {
