@@ -26,19 +26,21 @@ Step 2. **Set DH Parameters**: The Denavit-Hartenberg parameters for the PUMA 56
 | 5     | $0.0$     | $-90$         | $0.0$      | $\theta_5$               |
 
 Each joint transfromation is formed by a screw displacement along Z-axis, followed by a screw displacement along X-axis, that is,
+
 $$
-T = [Z(d,\theta)][X(a, \alpha)]=\begin{bmatrix}
+T = [Z(d,\theta)][X(a, \alpha)] = 
+\begin{bmatrix}
 	\cos\theta & -\sin\theta & 0 & 0 \\
 	\sin\theta & \cos\theta & 0 & 0 \\
 	0 & 0 & 0 & d \\
 	0 & 0 & 0 & 1
-\end{bmatrix}
+\end{bmatrix} 
 \begin{bmatrix}
 	1 & 0 & 0 & a \\
 	0 & \cos\alpha & -\sin\alpha & 0 \\
 	0 & \sin\alpha & \cos\alpha & 0 \\
 	0 & 0 & 0 & 1
-\end{bmatrix}=
+\end{bmatrix} = 
 \begin{bmatrix}
 	\cos\theta & -\sin\theta\cos\alpha & \sin\theta\sin\alpha & a\cos\theta \\
 	\sin\theta & \cos\theta\cos\alpha & -\cos\theta\sin\alpha & a\sin\theta \\
