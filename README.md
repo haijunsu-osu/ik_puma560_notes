@@ -11,6 +11,7 @@ The algorithms follow the Denavit-Hartenberg convention and include base and too
 
 ## Forward Kinematics Steps
 Step 1. **Define Base and Tool Transforms**: The base (`G`) and tool (`H`) transforms are set as translations along the z-axis.
+
 Step 2. **Set DH Parameters**: The Denavit-Hartenberg parameters for the PUMA 560 are defined as follows:
 
 | Joint | $a$ (m)   | $\alpha$ (deg) | $d$ (m)    | $\theta$ (variable) |
@@ -21,6 +22,8 @@ Step 2. **Set DH Parameters**: The Denavit-Hartenberg parameters for the PUMA 56
 | 4     | $0.0$     | $90$          | $0.43307$  | $\theta_4$               |
 | 5     | $0.0$     | $-90$         | $0.0$      | $\theta_5$               |
 | 6     | $0.0$     | $0$           | $0.0$      | $\theta_6$               |
+
+
 Step 3. **Compute DH Transform for Each Joint**: For each joint, a DH transformation matrix is constructed using the following formula:
 
    $$
@@ -37,6 +40,7 @@ where:
 - $\alpha$: link twist (in radians)
 - $a$: link length
 - $d$: link offset
+
 Step 4. **Multiply Transformations**: The overall arm transformation is computed by multiplying the DH matrices for all joints:
 
 	$$
@@ -44,6 +48,7 @@ Step 4. **Multiply Transformations**: The overall arm transformation is computed
 	$$
 
 where $T_1, T_2, ..., T_6$ are the DH transformation matrices for each joint, constructed as described above.
+
 Step 5. **Apply Base and Tool Transforms**: The final pose is obtained by applying the base and tool transforms to the arm transformation:
 
 	$$
@@ -77,7 +82,7 @@ Step 3. **Solve for First Joint Angle ($\theta_1$)**: Use a trigonometric equati
 
 	Use the helper: $\text{solve\_trig\_equation}(p_y, -p_x, d_3)$
 
-Step *Solve for Third Joint Angle ($\theta_3$)**: Use a distance equation and trigonometric solver to find possible $\theta_3$ values:
+Step 4. **Solve for Third Joint Angle ($\theta_3$)**: Use a distance equation and trigonometric solver to find possible $\theta_3$ values:
 
 	$$
 	2a_2(a_3\cos\theta_3 - d_4\sin\theta_3) = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)
