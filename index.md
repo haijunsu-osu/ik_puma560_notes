@@ -49,7 +49,7 @@ where:
 - $a$: link length
 - $d$: link offset
 
-Step 4. **Multiply Transformations**: The overall arm transformation is computed by multiplying the DH matrices for all joints:
+Step 3. **Multiply Transformations**: The overall arm transformation is computed by multiplying the DH matrices for all joints:
 
 	$$
 	T_{arm} = T_1 \times T_2 \times T_3 \times T_4 \times T_5 \times T_6
@@ -57,6 +57,7 @@ Step 4. **Multiply Transformations**: The overall arm transformation is computed
 
 where $T_1, T_2, ..., T_6$ are the DH transformation matrices for each joint, constructed as described above.
 
+Step 4. **Multiply The Base Frame and The Tool Frame**: :
 
 	$$
 	T = G \times T_{arm} \times H
@@ -163,3 +164,5 @@ def solve_trig_equation(A, B, C):
 
 ## Usage
 Run the Python script to test the kinematics algorithms with example joint angles. The script prints the results of forward and inverse kinematics, and verifies the solutions.
+
+---
