@@ -88,7 +88,7 @@ $$
 2a_2(a_3\cos\theta_3 - d_4\sin\theta_3) = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)
 $$
 
-(rewritten as: $A\cos\theta_3 + B\sin\theta_3 = C$, with $A = 2a_2a_3$, $B = -2a_2d_4$, $C = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)$)
+rewritten as: $A\cos\theta_3 + B\sin\theta_3 = C$, with $A = 2a_2a_3$, $B = -2a_2d_4$, $C = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)$
 
 Use the helper: $\text{solve\_trig\_equation}(2a_2a_3, -2a_2d_4, C_3)$
 
