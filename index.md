@@ -21,6 +21,9 @@ This repository contains a Python implementation of the forward and inverse kine
 - **Forward Kinematics**: Computes the end-effector pose (position and orientation) given the joint angles of the robot.
 The algorithms follow the Denavit-Hartenberg convention and include base and tool transformations for accurate modeling.
 
+- **Inverse Kinematics**: Computes all possible sets of joint angles that achieve a desired end-effector pose.
+
+
 ## Forward Kinematics Steps
 Step 1. **Define Base and Tool Transforms**: The base ($G$) and tool ($H$) transforms are set as translations along the z-axis.
 
@@ -46,7 +49,6 @@ T = \begin{bmatrix}
 \end{bmatrix}
 $$
 
-where:
 - $\theta$: joint angle (variable)
 - $\alpha$: link twist (in radians)
 
@@ -64,10 +66,8 @@ $$
 
 where:
 - $G$: base transform matrix
-- $T_{arm}$: product of DH matrices for all joints
 Step 1. **Remove Base/Tool Offsets**: Compute the effective transformation by removing the base and tool transforms from the target pose:
 
-$$
 T' = G^{-1} \cdot T \cdot H^{-1}
 $$
 
@@ -77,10 +77,6 @@ $$
 \mathbf{p}_{wc} = T'[0:3, 3]
 $$
 
-Step 3. **Solve for First Joint Angle ($\theta_1$)**: Use a trigonometric equation to solve for possible values of $\theta_1$:
-
-$$
--\sin\theta_1 \cdot p_x + \cos\theta_1 \cdot p_y = d_3
 $$
 (rewritten as: $p_y \cdot \cos\theta_1 + (-p_x) \cdot \sin\theta_1 = d_3$)
 
@@ -105,7 +101,6 @@ $$
 $$
 $$
 \theta_2 = \text{atan2}(s_2, c_2)
-$$
 
 Step 6. **Compute Wrist Rotation**: Calculate the wrist rotation matrix and solve for the last three joint angles ($\theta_4$, $\theta_5$, $\theta_6$) using spherical wrist formulas:
 
