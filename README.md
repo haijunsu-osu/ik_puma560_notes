@@ -13,86 +13,111 @@ The algorithms follow the Denavit-Hartenberg convention and include base and too
 1. **Define Base and Tool Transforms**: The base (`G`) and tool (`H`) transforms are set as translations along the z-axis.
 2. **Set DH Parameters**: The Denavit-Hartenberg parameters for the PUMA 560 are defined as follows:
 
-| Joint | a (m)   | alpha (deg) | d (m)    | theta (variable) |
+| Joint | $a$ (m)   | $\alpha$ (deg) | $d$ (m)    | $\theta$ (variable) |
 |-------|---------|-------------|----------|------------------|
-| 1     | 0.0     | -90         | 0.0      | θ₁               |
-| 2     | 0.4318  | 0           | 0.0      | θ₂               |
-| 3     | 0.0203  | -90         | 0.14909  | θ₃               |
-| 4     | 0.0     | 90          | 0.43307  | θ₄               |
-| 5     | 0.0     | -90         | 0.0      | θ₅               |
-| 6     | 0.0     | 0           | 0.0      | θ₆               |
+| 1     | $0.0$     | $-90$         | $0.0$      | $\theta_1$               |
+| 2     | $0.4318$  | $0$           | $0.0$      | $\theta_2$               |
+| 3     | $0.0203$  | $-90$         | $0.14909$  | $\theta_3$               |
+| 4     | $0.0$     | $90$          | $0.43307$  | $\theta_4$               |
+| 5     | $0.0$     | $-90$         | $0.0$      | $\theta_5$               |
+| 6     | $0.0$     | $0$           | $0.0$      | $\theta_6$               |
 3. **Compute DH Transform for Each Joint**: For each joint, a DH transformation matrix is constructed using the following formula:
 
-   T = [
-	   [cos(θ),            -sin(θ)*cos(α),  sin(θ)*sin(α),   a*cos(θ)],
-	   [sin(θ),             cos(θ)*cos(α), -cos(θ)*sin(α),   a*sin(θ)],
-	   [0,                  sin(α),         cos(α),          d],
-	   [0,                  0,              0,               1]
-   ]
+   $$
+   T = \begin{bmatrix}
+	   \cos\theta & -\sin\theta\cos\alpha & \sin\theta\sin\alpha & a\cos\theta \\
+	   \sin\theta & \cos\theta\cos\alpha & -\cos\theta\sin\alpha & a\sin\theta \\
+	   0 & \sin\alpha & \cos\alpha & d \\
+	   0 & 0 & 0 & 1
+   \end{bmatrix}
+   $$
 
 where:
-- θ: joint angle (variable)
-- α: link twist (in radians)
-- a: link length
-- d: link offset
+- $\theta$: joint angle (variable)
+- $\alpha$: link twist (in radians)
+- $a$: link length
+- $d$: link offset
 4. **Multiply Transformations**: The overall arm transformation is computed by multiplying the DH matrices for all joints:
 
-	T_arm = T1 × T2 × T3 × T4 × T5 × T6
+	$$
+	T_{arm} = T_1 \times T_2 \times T_3 \times T_4 \times T_5 \times T_6
+	$$
 
-where T1, T2, ..., T6 are the DH transformation matrices for each joint, constructed as described above.
+where $T_1, T_2, ..., T_6$ are the DH transformation matrices for each joint, constructed as described above.
 5. **Apply Base and Tool Transforms**: The final pose is obtained by applying the base and tool transforms to the arm transformation:
 
-	T = G × T_arm × H
+	$$
+	T = G \times T_{arm} \times H
+	$$
 
 where:
-- G: base transform matrix
-- T_arm: product of DH matrices for all joints
-- H: tool transform matrix
+- $G$: base transform matrix
+- $T_{arm}$: product of DH matrices for all joints
+- $H$: tool transform matrix
 
 ## Inverse Kinematics Steps
 1. **Remove Base/Tool Offsets**: Compute the effective transformation by removing the base and tool transforms from the target pose:
-   
-	T' = G⁻¹ · T · H⁻¹
+
+	$$
+	T' = G^{-1} \cdot T \cdot H^{-1}
+	$$
 
 2. **Extract Wrist Center**: The wrist center position is extracted from the transformation matrix:
-   
-	p_wc = T'[0:3, 3]
 
-3. **Solve for First Joint Angle (θ₁)**: Use a trigonometric equation to solve for possible values of θ₁:
-   
-	-sin(θ₁)·pₓ + cos(θ₁)·p_y = d₃
-	(rewritten as: py·cos(θ₁) + (-px)·sin(θ₁) = d₃)
-   
-	Use the helper: solve_trig_equation(py, -px, d3)
+	$$
+	\mathbf{p}_{wc} = T'[0:3, 3]
+	$$
 
-4. **Solve for Third Joint Angle (θ₃)**: Use a distance equation and trigonometric solver to find possible θ₃ values:
-   
-	2·a₂·(a₃·cos(θ₃) - d₄·sin(θ₃)) = (pₓ² + p_y² + p_z²) - (a₂² + a₃² + d₃² + d₄²)
-	(rewritten as: A·cos(θ₃) + B·sin(θ₃) = C, with A = 2·a₂·a₃, B = -2·a₂·d₄, C = (pₓ² + p_y² + p_z²) - (a₂² + a₃² + d₃² + d₄²))
-   
-	Use the helper: solve_trig_equation(2*a2*a3, -2*a2*d4, C3)
+3. **Solve for First Joint Angle ($\theta_1$)**: Use a trigonometric equation to solve for possible values of $\theta_1$:
 
-5. **Solve for Second Joint Angle (θ₂)**: For each (θ₁, θ₃) pair, solve for θ₂ using the robot geometry:
-   
-	c₂·(c₁·pₓ + s₁·p_y) - s₂·p_z = a₂ + a₃·cos(θ₃) - d₄·sin(θ₃)
-	-s₂·(c₁·pₓ + s₁·p_y) - c₂·p_z = a₃·sin(θ₃) + d₄·cos(θ₃)
-   
-	θ₂ = atan2(s₂, c₂)
+	$$
+	-\sin\theta_1 \cdot p_x + \cos\theta_1 \cdot p_y = d_3
+	$$
+	(rewritten as: $p_y \cdot \cos\theta_1 + (-p_x) \cdot \sin\theta_1 = d_3$)
 
-6. **Compute Wrist Rotation**: Calculate the wrist rotation matrix and solve for the last three joint angles (θ₄, θ₅, θ₆) using spherical wrist formulas:
-   
-	R₀₃ = rotation from first three joints
-	R' = rotation part of T'
-	R₃₆ = R₀₃ᵀ · R'
-   
+	Use the helper: $\text{solve\_trig\_equation}(p_y, -p_x, d_3)$
+
+4. **Solve for Third Joint Angle ($\theta_3$)**: Use a distance equation and trigonometric solver to find possible $\theta_3$ values:
+
+	$$
+	2a_2(a_3\cos\theta_3 - d_4\sin\theta_3) = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)
+	$$
+	(rewritten as: $A\cos\theta_3 + B\sin\theta_3 = C$, with $A = 2a_2a_3$, $B = -2a_2d_4$, $C = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)$)
+
+	Use the helper: $\text{solve\_trig\_equation}(2a_2a_3, -2a_2d_4, C_3)$
+
+5. **Solve for Second Joint Angle ($\theta_2$)**: For each ($\theta_1$, $\theta_3$) pair, solve for $\theta_2$ using the robot geometry:
+
+	$$
+	c_2(c_1p_x + s_1p_y) - s_2p_z = a_2 + a_3\cos\theta_3 - d_4\sin\theta_3
+	$$
+	$$
+	-s_2(c_1p_x + s_1p_y) - c_2p_z = a_3\sin\theta_3 + d_4\cos\theta_3
+	$$
+	$$
+		heta_2 = \text{atan2}(s_2, c_2)
+	$$
+
+6. **Compute Wrist Rotation**: Calculate the wrist rotation matrix and solve for the last three joint angles ($\theta_4$, $\theta_5$, $\theta_6$) using spherical wrist formulas:
+
+	$$
+	R_{03} = \text{rotation from first three joints}
+	$$
+	$$
+	R' = \text{rotation part of } T'
+	$$
+	$$
+	R_{36} = R_{03}^T \cdot R'
+	$$
+
 	For the spherical wrist:
-	- θ₅: acos(R₃₆[2,2]) and -acos(R₃₆[2,2])
-	- θ₄: atan2(R₃₆[1,2]/(-sin(θ₅)), R₃₆[0,2]/(-sin(θ₅)))
-	- θ₆: atan2(R₃₆[2,1]/(-sin(θ₅)), R₃₆[2,0]/sin(θ₅))
+	- $\theta_5$: $\arccos(R_{36}[2,2])$ and $-\arccos(R_{36}[2,2])$
+	- $\theta_4$: $\text{atan2}(R_{36}[1,2]/(-\sin\theta_5), R_{36}[0,2]/(-\sin\theta_5))$
+	- $\theta_6$: $\text{atan2}(R_{36}[2,1]/(-\sin\theta_5), R_{36}[2,0]/\sin\theta_5)$
 
-7. **Normalize and Verify Solutions**: All solutions are normalized to the range [-π, π] and verified against the original pose.
-   
-	Use: normalize_all(q)
+7. **Normalize and Verify Solutions**: All solutions are normalized to the range $[-\pi, \pi]$ and verified against the original pose.
+
+	Use: $\text{normalize\_all}(q)$
 
 ## Usage
 Run the Python script to test the kinematics algorithms with example joint angles. The script prints the results of forward and inverse kinematics, and verifies the solutions.
