@@ -1,0 +1,4 @@
+title: PUMA 560 Kinematics Notes
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
