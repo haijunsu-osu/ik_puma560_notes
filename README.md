@@ -1,6 +1,7 @@
 # PUMA 560 Kinematics
 
 This repository contains a Python implementation of the forward and inverse kinematics algorithms for the PUMA 560 robot arm. The code is based on the procedures and equations described in the document [Inverse Kinematics of PUMA 560 Robot.pdf](./Inverse%20Kinematics%20of%20PUMA%20560%20Robot.pdf).
+You can also explore and run the code interactively in the Jupyter notebook: [PUMA560Kinematics_FollowNotes_Answer.ipynb](./PUMA560Kinematics_FollowNotes_Answer.ipynb).
 
 ## Overview
 
@@ -35,7 +36,7 @@ where:
 - $a$: link length
 - $d$: link offset
 
-Step 4. **Multiply Transformations**: The overall arm transformation is computed by multiplying the DH matrices for all joints:
+Step 3. **Multiply Transformations**: The overall arm transformation is computed by multiplying the DH matrices for all joints:
 
 	$$
 	T_{arm} = T_1 \times T_2 \times T_3 \times T_4 \times T_5 \times T_6
@@ -43,6 +44,7 @@ Step 4. **Multiply Transformations**: The overall arm transformation is computed
 
 where $T_1, T_2, ..., T_6$ are the DH transformation matrices for each joint, constructed as described above.
 
+Step 4. **Multiply The Base Frame and The Tool Frame**: :
 
 	$$
 	T = G \times T_{arm} \times H
