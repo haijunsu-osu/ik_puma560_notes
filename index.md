@@ -1,8 +1,7 @@
 layout: default
 
-title: PUMA 560 Kinematics Notes
 ---
-
+title: PUMA 560 Kinematics Notes
 <script>
 window.MathJax = {
     tex: {
@@ -20,8 +19,6 @@ This repository contains a Python implementation of the forward and inverse kine
 ## Overview
 
 - **Forward Kinematics**: Computes the end-effector pose (position and orientation) given the joint angles of the robot.
-- **Inverse Kinematics**: Computes all possible sets of joint angles that achieve a desired end-effector pose.
-
 The algorithms follow the Denavit-Hartenberg convention and include base and tool transformations for accurate modeling.
 
 ## Forward Kinematics Steps
@@ -51,10 +48,6 @@ $$
 where:
 - $\theta$: joint angle (variable)
 - $\alpha$: link twist (in radians)
-- $a$: link length
-- $d$: link offset
-
-4. **Multiply Transformations**: The overall arm transformation is computed by multiplying the DH matrices for all joints:
 
 $$
 T_{arm} = T_1 \times T_2 \times T_3 \times T_4 \times T_5 \times T_6
@@ -71,9 +64,6 @@ $$
 where:
 - $G$: base transform matrix
 - $T_{arm}$: product of DH matrices for all joints
-- $H$: tool transform matrix
-
-## Inverse Kinematics Steps
 1. **Remove Base/Tool Offsets**: Compute the effective transformation by removing the base and tool transforms from the target pose:
 
 $$
@@ -142,4 +132,3 @@ Run the Python script to test the kinematics algorithms with example joint angle
 
 ---
 
-For more details, refer to the [Inverse Kinematics of PUMA 560 Robot.pdf](./Inverse%20Kinematics%20of%20PUMA%20560%20Robot.pdf).
