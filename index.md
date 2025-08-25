@@ -52,17 +52,17 @@ where:
 
 Step 3. **Multiply Transformations**: The overall arm transformation is computed by multiplying the DH matrices for all joints:
 
-	$$
-	T_{arm} = T_1 \times T_2 \times T_3 \times T_4 \times T_5 \times T_6
-	$$
+$$
+T_{arm} = T_1 \times T_2 \times T_3 \times T_4 \times T_5 \times T_6
+$$
 
 where $T_1, T_2, ..., T_6$ are the DH transformation matrices for each joint, constructed as described above.
 
 Step 4. **Multiply The Base Frame and The Tool Frame**: :
 
-	$$
-	T = G \times T_{arm} \times H
-	$$
+$$
+T = G \times T_{arm} \times H
+$$
 
 where:
 - $G$: base transform matrix
@@ -72,30 +72,30 @@ where:
 ## Inverse Kinematics Steps
 Step 1. **Remove Base/Tool Offsets**: Compute the effective transformation by removing the base and tool transforms from the target pose:
 
-	$$
-	T' = G^{-1} \cdot T \cdot H^{-1}
-	$$
+$$
+T' = G^{-1} \cdot T \cdot H^{-1}
+$$
 
 Step 2. **Extract Wrist Center**: The wrist center position is extracted from the transformation matrix:
 
-	$$
-	\mathbf{p}_{wc} = T'[0:3, 3]
-	$$
+$$
+\mathbf{p}_{wc} = T'[0:3, 3]
+$$
 
 Step 3. **Solve for First Joint Angle ($\theta_1$)**: Use a trigonometric equation to solve for possible values of $\theta_1$:
 
-	$$
-	-\sin\theta_1 \cdot p_x + \cos\theta_1 \cdot p_y = d_3
-	$$
+$$
+-\sin\theta_1 \cdot p_x + \cos\theta_1 \cdot p_y = d_3
+$$
 	(rewritten as: $p_y \cdot \cos\theta_1 + (-p_x) \cdot \sin\theta_1 = d_3$)
 
 	Use the helper: $\text{solve\_trig\_equation}(p_y, -p_x, d_3)$
 
 Step 4. **Solve for Third Joint Angle ($\theta_3$)**: Use a distance equation and trigonometric solver to find possible $\theta_3$ values:
 
-	$$
-	2a_2(a_3\cos\theta_3 - d_4\sin\theta_3) = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)
-	$$
+$$
+2a_2(a_3\cos\theta_3 - d_4\sin\theta_3) = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)
+$$
 	(rewritten as: $A\cos\theta_3 + B\sin\theta_3 = C$, with $A = 2a_2a_3$, $B = -2a_2d_4$, $C = (p_x^2 + p_y^2 + p_z^2) - (a_2^2 + a_3^2 + d_3^2 + d_4^2)$)
 
 	Use the helper: $\text{solve\_trig\_equation}(2a_2a_3, -2a_2d_4, C_3)$
@@ -113,15 +113,15 @@ $$\theta_2 = \text{atan2}(s_2, c_2)$$
 
 Step 6. **Compute Wrist Rotation**: Calculate the wrist rotation matrix and solve for the last three joint angles ($\theta_4$, $\theta_5$, $\theta_6$) using spherical wrist formulas:
 
-	$$
-	R_{03} = \text{rotation from first three joints}
-	$$
-	$$
-	R' = \text{rotation part of } T'
-	$$
-	$$
-	R_{36} = R_{03}^T \cdot R'
-	$$
+$$
+R_{03} = \text{rotation from first three joints}
+$$
+$$
+R' = \text{rotation part of } T'
+$$
+$$
+R_{36} = R_{03}^T \cdot R'
+$$
 
 	For the spherical wrist:
 	- $\theta_5$: $\arccos(R_{36}[2,2])$ and $-\arccos(R_{36}[2,2])$
